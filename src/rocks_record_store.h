@@ -134,6 +134,14 @@ namespace mongo {
                                                   bool enforceQuota,
                                                   UpdateNotifier* notifier );
 
+        virtual StatusWith<RecordId> updateRecordEx( OperationContext* txn,
+                                                    const RecordId& oldLocation,
+                                                    int oldlen,
+                                                    const char* data,
+                                                    int len,
+                                                    bool enforceQuota,
+                                                    UpdateNotifier* notifier );
+
         virtual bool updateWithDamagesSupported() const;
 
         virtual StatusWith<RecordData> updateWithDamages(OperationContext* txn,

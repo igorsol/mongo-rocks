@@ -621,6 +621,32 @@ namespace mongo {
         return StatusWith<RecordId>( loc );
     }
 
+    StatusWith<RecordId> RocksRecordStore::updateRecordEx( OperationContext* txn,
+                                                        const RecordId& loc,
+                                                        int oldlen,
+                                                        const char* data,
+                                                        int len,
+                                                        bool enforceQuota,
+                                                        UpdateNotifier* notifier ) {
+        std::string key(_makePrefixedKey(_prefix, loc));
+
+        RocksRecoveryUnit* ru = RocksRecoveryUnit::getRocksRecoveryUnit( txn );
+        if (!ru->transaction()->registerWrite(key)) {
+            throw WriteConflictException();
+        }
+
+        ru->writeBatch()->Put(key, rocksdb::Slice(data, len));
+        if (_isOplog) {
+            _oplogKeyTracker->insertKey(ru, loc, len);
+        }
+
+        _increaseDataSize(txn, len - oldlen);
+
+        cappedDeleteAsNeeded(txn, loc);
+
+        return StatusWith<RecordId>( loc );
+    }
+
     bool RocksRecordStore::updateWithDamagesSupported() const {
         return false;
     }
