@@ -644,6 +644,8 @@ namespace mongo {
             options.compression_per_level[2] = rocksdb::kLZ4Compression;
         } else if (rocksGlobalOptions.compression == "lz4hc") {
             options.compression_per_level[2] = rocksdb::kLZ4HCCompression;
+        } else if (rocksGlobalOptions.compression == "zstd") {
+            options.compression_per_level[2] = rocksdb::kZSTD;
         } else {
             log() << "Unknown compression, will use default (snappy)";
             options.compression_per_level[2] = rocksdb::kSnappyCompression;
