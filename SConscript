@@ -30,6 +30,7 @@ env.Library(
         '$BUILD_DIR/mongo/util/processinfo',
         '$BUILD_DIR/third_party/shim_snappy',
         '$BUILD_DIR/third_party/shim_lz4',
+        '$BUILD_DIR/third_party/shim_zstd',
         ],
     SYSLIBDEPS=["rocksdb",
                 "z",
